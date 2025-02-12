@@ -1,6 +1,6 @@
 // Class MyPoint - represents a point in 2 dimensions
 //
-import java.util.*;
+
 
 public class Point
 {

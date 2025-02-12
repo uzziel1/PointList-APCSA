@@ -14,11 +14,18 @@ public class PointList
         int    k;
         double  x;
         double  y;
-        double  s;
+  
 
         Point[] point = new Point[ MAX_POINTS ];
         int     size = 0; // current #points in list
         
+        //Dummy code ERASE LATER 
+        point[0] = new Point(1, 2); 
+        point[1] = new Point(1, 3); 
+        point[2] = new Point(1, 4); 
+
+        size = 3;
+
         do
         {
             displayOptions();
@@ -65,20 +72,32 @@ public class PointList
             }
             else if( choice == 4 )
             {
-
-                // calculate the the line of best-fit.
-                    double XY = covXY(point,size);
+                if (size < 2) {
+                    System.out.println("At least 2 points are required to calculate the line of best fit.");
+                } else {
+                    // calculate the the line of best-fit.
+                    double covXY = covXY(point,size);
                     double varX = varX(point,size);
                     double varY = varY(point,size);
                     
-                    double m = XY / varX; 
+                    if (varX == 0) {
+                        System.out.println("Variance of X is 0, Cannot calculate slope (m).");
+                    } else {
+                        double m = covXY / varX; 
                     
-                    double b = meanY(point, size) - m * meanX(point, size);
-                    double r = XY / (Math.sqrt(varX) * Math.sqrt(varY));
+                        double b = meanY(point, size) - m * meanX(point, size);
+                        double r = 0;
+                        if (varX != 0 && varY != 0) {
+                            r = covXY / (Math.sqrt(varX) * Math.sqrt(varY));
+                        }
+                        System.out.printf("Line of best fit:\nY = %f * x + %f \nr = %f", m, b, r);      
+                }
+           
                     
-                    System.out.printf("Line of best fit:\nY = %f * x + %f \nr = %f", m, b, r);
-                // add code here
-                    
+                   
+                    }
+
+                               
               
             }
         } while( choice < 5 );    
@@ -118,21 +137,23 @@ public class PointList
     }
     
     private static double varX (Point[] p, int points) {
+        double meanX = meanX(p, points);
         double sum = 0;
         for (int i = 0; i < points; i++) {
             if (p[i] != null)
-            sum += Math.sqrt(p[i].getX() - meanX(p, points));
+            sum += (p[i].getX() - meanX) * ((p[i].getX() - meanX));
         }
-        double varX = (sum/points);
+        double varX = sum/points;
         
        return varX;  
     }
     
     private static double varY (Point[] p, int points) {
+        double meanY = meanY(p, points);
         double sum = 0;
         for (int i = 0; i < points; i++) {
             if (p[i] != null)
-            sum += Math.sqrt(p[i].getY() - meanY(p, points));
+            sum += (p[i].getY() - meanY) * ((p[i].getY() - meanY));
         }
         double varY = (sum/points);
         
@@ -140,10 +161,12 @@ public class PointList
     }
     
     private static double covXY (Point[] p, int points) {
+        double meanX = meanX(p, points);
+        double meanY = meanY(p, points);
         double sum = 0;
         for (int i = 0; i < points; i++) {
             if (p[i] != null)
-            sum += (p[i].getX() - meanX(p, points)) * (p[i].getY() - meanY(p, points));
+            sum += (p[i].getX() - meanX) * (p[i].getY() - meanY);
         }
         double covXY = (sum/points);
         
