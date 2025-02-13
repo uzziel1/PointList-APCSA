@@ -18,13 +18,6 @@ public class PointList
 
         Point[] point = new Point[ MAX_POINTS ];
         int     size = 0; // current #points in list
-        
-        //Dummy code ERASE LATER 
-        point[0] = new Point(1, 2); 
-        point[1] = new Point(1, 3); 
-        point[2] = new Point(1, 4); 
-
-        size = 3;
 
         do
         {
@@ -85,29 +78,21 @@ public class PointList
                     } else {
                         double m = covXY / varX; 
                     
-                        double b = meanY(point, size) - m * meanX(point, size);
+                        double b = mean(point, size, false) - m * mean(point, size, true);
                         double r = 0;
                         if (varX != 0 && varY != 0) {
                             r = covXY / (Math.sqrt(varX) * Math.sqrt(varY));
                         }
-                        System.out.printf("Line of best fit:\nY = %f * x + %f \nr = %f", m, b, r);      
+                        System.out.printf("Line of best fit:\nY = %.3f * x + %.3f \nr = %.3f", m, b, r);      
                 }
-           
-                    
-                   
                     }
-
-                               
-              
             }
         } while( choice < 5 );    
         
         
     }
     
-    /**
-     * Display the programs options to the user
-     */
+  
     public static void displayOptions()
     {
         System.out.println("\n1. Add a point to the list.      2. Display the points.");
@@ -115,21 +100,10 @@ public class PointList
         System.out.println("5. Quit");
         System.out.print("Which (1-5)? ");
     }
-    private static double meanX (Point[] p, int points) {
+    private static double mean (Point[] p, int points, boolean isX) {
         double sum = 0;
         for (int i = 0; i < points; i++) {
-            sum += p[i].getX();
-        }
-        double mean = (sum/points);
-        
-        return mean; 
-    }
-    
-      private static double meanY (Point[] p, int points) {
-        double sum = 0;
-        for (int i = 0; i < points; i++) {
-            if (p[i] != null)
-            sum += p[i].getY();
+            sum += isX ? p[i].getX(): p[i].getY();
         }
         double mean = (sum/points);
         
@@ -137,7 +111,7 @@ public class PointList
     }
     
     private static double varX (Point[] p, int points) {
-        double meanX = meanX(p, points);
+        double meanX = mean(p, points, true);
         double sum = 0;
         for (int i = 0; i < points; i++) {
             if (p[i] != null)
@@ -149,7 +123,7 @@ public class PointList
     }
     
     private static double varY (Point[] p, int points) {
-        double meanY = meanY(p, points);
+        double meanY = mean(p, points, false);
         double sum = 0;
         for (int i = 0; i < points; i++) {
             if (p[i] != null)
@@ -161,8 +135,8 @@ public class PointList
     }
     
     private static double covXY (Point[] p, int points) {
-        double meanX = meanX(p, points);
-        double meanY = meanY(p, points);
+        double meanX = mean(p, points, true);
+        double meanY = mean(p, points, false);
         double sum = 0;
         for (int i = 0; i < points; i++) {
             if (p[i] != null)
